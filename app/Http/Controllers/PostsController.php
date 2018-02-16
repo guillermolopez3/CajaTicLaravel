@@ -63,7 +63,7 @@ class PostsController extends Controller
             return redirect('/posts');
         }
         else{
-            return view('posts/create',[
+            return view('posts.create',[
                 'posts'=>$post,
             ]);
         }
@@ -77,7 +77,11 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        //
+        $posts= Post::find($id);
+
+        return view('posts.show',[
+            'posts'=>$posts,
+        ]);
     }
 
     /**
@@ -125,7 +129,7 @@ class PostsController extends Controller
             return redirect('/posts');
         }
         else{
-            return view('posts/edit',[
+            return view('posts.edit',[
                 'posts'=>$post,
             ]);
         }
