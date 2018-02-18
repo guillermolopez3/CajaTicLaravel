@@ -20,7 +20,12 @@ class CreatePostsTable extends Migration
             $table->string('copete',255)->nullable();
             $table->text('image')->nullable();
             $table->string('tags',400)->nullable();
+            $table->integer('id_tipo_activity')->unsigned();
+            $table->text('description')->nullable();
+            $table->text('link')->nullable();
             $table->boolean('activo');
+
+            $table->foreign('id_tipo_activity')->references('id')->on('activities');
         });
     }
 

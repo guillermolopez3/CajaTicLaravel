@@ -1,4 +1,10 @@
 {!! Form::open(['url'=>$url,'method'=>$method]) !!}
+	
+	<div class="form-group">
+		{{ Form::label('activity', 'Tipo de Recurso', ['class' => 'form-control-label']) }}
+		{{ Form::select('activity',$activity,$posts->id_tipo_activity,['class'=>'form-control']) }}
+	</div>
+
 	<div class="form-group">
 		{{ Form::label('title', 'Título del Post', ['class' => 'form-control-label']) }}
 		{{ Form::text('title',$posts->title,['class'=>'form-control', 'placeholder'=>'titulo']) }}
@@ -16,6 +22,14 @@
 		{{ Form::text('tags',$posts->tags,['class'=>'form-control', 'placeholder'=>'Tags']) }}
 	</div>
 	<div class="form-group">
+		{{ Form::label('descripcion', 'Detalle del recurso', ['class' => 'form-control-label']) }}
+		{{ Form::textarea('descripcion',$posts->detalle,['class'=>'form-control','rows'=>'8', 'placeholder'=>'desarrollo mas extenso del recurso']) }}
+	</div>
+	<div class="form-group">
+		{{ Form::label('link', 'Url del recurso', ['class' => 'form-control-label']) }}
+		{{ Form::text('link',$posts->link,['class'=>'form-control', 'placeholder'=>'url del recurso (Video, web...)']) }}
+	</div>
+	<div class="form-group">
 		{{ Form::label('activo', '¿Post activo?', ['class' => 'form-control-label']) }}
 		
 		@if($posts->activo==1)
@@ -26,6 +40,6 @@
 	</div>
 	<div class="form-group">
 		<a href="{{ url('/posts') }}">Regresar al listado de Posts</a>
-		<input type="submit" value="Enviar" class="btn btn-success">
+		<input type="submit" value="Guardar" class="btn btn-success">
 	</div>
 {!! Form::close() !!}

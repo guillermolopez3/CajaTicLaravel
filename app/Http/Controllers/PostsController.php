@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use App\Activity;
 
 class PostsController extends Controller
 {
@@ -29,8 +30,13 @@ class PostsController extends Controller
     {
         $posts= new Post;
         $posts->activo='1'; //defino que siempre el formulario muestre al crear el chk activo
+        //$activity= Activity::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
+        $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
+        //$activity= $act->pluck('name','id');
+        //dd($act);
         return view('posts.create',[
             'posts'=>$posts,
+            'activity'=>$activity,
         ]);
     }
 
@@ -40,7 +46,7 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) //guardo el post haciendo click en el
+    public function store(Request $request) //guardo el post haciendo click en el btn guardar
     {
         $post = new Post;
 
@@ -51,11 +57,15 @@ class PostsController extends Controller
         }else{
             $chk=1;
         }
-            
+        
+        //dd($request);
         $post->title = $request->title;
         $post->copete = $request->copete;
         $post->image = $request->img;
         $post->tags = $request->tags;
+        $post->id_tipo_activity = $request->activity;
+        $post->description = $request->descripcion;
+        $post->link = $request->link;
         $post->activo = $chk;
 
         if($post->save())
@@ -93,8 +103,10 @@ class PostsController extends Controller
     public function edit($id) //abro el form para editar
     {
         $posts= Post::find($id);
+        $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
         return view('posts.edit',[
             'posts'=>$posts,
+            'activity'=>$activity,
         ]);
     }
 
@@ -122,6 +134,9 @@ class PostsController extends Controller
         $post->copete = $request->copete;
         $post->image = $request->img;
         $post->tags = $request->tags;
+        $post->id_tipo_activity = $request->activity;
+        $post->description = $request->descripcion;
+        $post->link = $request->link;
         $post->activo = $chk;
 
         if($post->save())

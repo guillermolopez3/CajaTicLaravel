@@ -27,7 +27,7 @@
 					<tr>
 						<td>{{ $post->title }}</td>
 						<td>{{ $post->copete }}</td>
-						<td>{{ $post->created_at }}</td>
+						<td>{{ $post->created_at->format('d/m/Y') }}</td>
 						<td>{{ $post->tags }}</td>
 						@if($post->activo)
 							<td>{{ 'Si' }}</td>
