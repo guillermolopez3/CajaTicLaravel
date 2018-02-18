@@ -7,7 +7,7 @@
 
 	<div class="form-group">
 		{{ Form::label('seccion', 'Sección del Recurso (manteniendo la tecla ctl se hace la selección múltiple)', ['class' => 'form-control-label']) }}
-		{{ Form::select('seccion[]',$seccion,null,['class'=>'form-control','multiple' => true]) }}
+		{{ Form::select('seccion[]',$seccion,array_keys($array),['class'=>'form-control','multiple' => true]) }}
 	</div>
 
 	<div class="form-group">

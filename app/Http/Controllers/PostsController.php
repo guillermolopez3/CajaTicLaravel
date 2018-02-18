@@ -32,6 +32,7 @@ class PostsController extends Controller
     public function create() //llamo al formulario y lo muestro
     {
         $posts= new Post;
+        $array=array();
         $posts->activo='1'; //defino que siempre el formulario muestre al crear el chk activo
         $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
@@ -41,6 +42,7 @@ class PostsController extends Controller
             'posts'     =>$posts,
             'activity'  =>$activity,
             'seccion'   =>$seccion,
+            'array' =>$array,
         ]);
     }
 
@@ -75,27 +77,16 @@ class PostsController extends Controller
         DB::beginTransaction();
         try{
             $post->save();
-            $post->seccion()->sync($request->get('seccion'));
-            //$seccion=new SeccionPost;
-
-            /*for ($i=0; $i < ; $i++) { 
-                # code...
-            }
-            foreach ($request->seccion as $sect) {
-                $seccion->id_post= $post->id;
-                $seccion->id_seccion=$request->seccion;
-                $seccion->save();    
-            }*/
+            $post->seccion()->sync($request->get('seccion')); //de esta manera guardo en la tabla pivote
             
-            //throw new \Exception('exception lanzada');
         }
         catch(\Exception $e)
        {
              DB::rollBack();
-             return($e->getMessage());
-            /* return view('posts.create',[
+            // return($e->getMessage());
+            return view('posts.create',[
                 'posts'=>$post,
-            ]);*/
+            ]);
        }
 
         DB::commit();
@@ -127,12 +118,19 @@ class PostsController extends Controller
     public function edit($id) //abro el form para editar
     {
         $posts= Post::find($id);
+        $array=array(); //creo el array
+        //recorro las relaciones y creo un nuevo array con los valores necesarios para la seleccion multiple
+        //luego en el form uso array_keys para llenar el ocmbo multiple
+        foreach ($posts->seccion as $role) {
+            $array=array_add($array,$role->id,$role->name);
+        }   
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
         $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         return view('posts.edit',[
             'posts'=>$posts,
             'activity'=>$activity,
             'seccion'   =>$seccion,
+            'array' =>$array,
         ]);
     }
 
@@ -165,15 +163,24 @@ class PostsController extends Controller
         $post->link = $request->link;
         $post->activo = $chk;
 
-        if($post->save())
-        {
-            return redirect('/posts');
+        DB::beginTransaction();
+        try{
+            $post->save();
+            $post->seccion()->sync($request->get('seccion')); //de esta manera guardo en la tabla pivote
+            
         }
-        else{
-            return view('posts.edit',[
+        catch(\Exception $e)
+       {
+             DB::rollBack();
+            //return($e->getMessage());
+           return view('posts.create',[
                 'posts'=>$post,
             ]);
-        }
+       }
+
+        DB::commit();
+        return redirect('/posts');
+       
     }
 
     /**
