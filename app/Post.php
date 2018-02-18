@@ -10,14 +10,12 @@ class Post extends Model
 
     public function activity() //un post tiene una actividad
     {
-    	$this->hasOne(Activity::class);
+    	return $this->hasOne(Activity::class);
     }
 
-    //defino la relacion que tengo con SeccionPost
-   /* public function seccionPost()
+    public function seccion()
     {
-    	//devuelve todos los seccionPost donde aparezca el post trabajado
-    	return this->hasMany(SeccionPost::class);
+    	return $this->belongsToMany(Section::class);
+    }
 
-    }*/
 }

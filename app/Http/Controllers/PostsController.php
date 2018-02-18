@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Post;
 use App\Activity;
+use App\Section;
+use App\PostSection;
 
 class PostsController extends Controller
 {
@@ -30,13 +33,14 @@ class PostsController extends Controller
     {
         $posts= new Post;
         $posts->activo='1'; //defino que siempre el formulario muestre al crear el chk activo
-        //$activity= Activity::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
+        $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
-        //$activity= $act->pluck('name','id');
+        //$activity= $act->pluck('name','id'); //con plunk le paso los parametros que solo quiero me muestre en el array
         //dd($act);
         return view('posts.create',[
-            'posts'=>$posts,
-            'activity'=>$activity,
+            'posts'     =>$posts,
+            'activity'  =>$activity,
+            'seccion'   =>$seccion,
         ]);
     }
 
@@ -68,15 +72,35 @@ class PostsController extends Controller
         $post->link = $request->link;
         $post->activo = $chk;
 
-        if($post->save())
-        {
-            return redirect('/posts');
+        DB::beginTransaction();
+        try{
+            $post->save();
+            $post->seccion()->sync($request->get('seccion'));
+            //$seccion=new SeccionPost;
+
+            /*for ($i=0; $i < ; $i++) { 
+                # code...
+            }
+            foreach ($request->seccion as $sect) {
+                $seccion->id_post= $post->id;
+                $seccion->id_seccion=$request->seccion;
+                $seccion->save();    
+            }*/
+            
+            //throw new \Exception('exception lanzada');
         }
-        else{
-            return view('posts.create',[
+        catch(\Exception $e)
+       {
+             DB::rollBack();
+             return($e->getMessage());
+            /* return view('posts.create',[
                 'posts'=>$post,
-            ]);
-        }
+            ]);*/
+       }
+
+        DB::commit();
+        return redirect('/posts');
+        
     }
 
     /**
@@ -104,9 +128,11 @@ class PostsController extends Controller
     {
         $posts= Post::find($id);
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
+        $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         return view('posts.edit',[
             'posts'=>$posts,
             'activity'=>$activity,
+            'seccion'   =>$seccion,
         ]);
     }
 
@@ -160,4 +186,6 @@ class PostsController extends Controller
     {
         //
     }
+
+
 }

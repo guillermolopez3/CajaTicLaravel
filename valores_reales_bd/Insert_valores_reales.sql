@@ -4,7 +4,7 @@ INSERT INTO `activities` (`id`, `name`, `activo`) VALUES
 (3, 'Audio', 1),
 (4, 'Pdf', 1);
 
-INSERT INTO `seccions` (`id`, `name`, `activo`) VALUES
+INSERT INTO `sections` (`id`, `name`, `activo`) VALUES
 (1, 'PD', 1),
 (2, 'CI', 1),
 (3, 'NE', 1),
@@ -25,6 +25,6 @@ INSERT INTO `posts` (`id`, `created_at`, `updated_at`, `title`, `copete`, `image
   'http://www.igualdadycalidadcba.gov.ar/CajaTIC/pdf/Orientaciones-05.pdf', 1);
 
 
-INSERT INTO `seccion_posts` (`id`, `id_post`, `id_seccion`) VALUES
+INSERT INTO `post_section` (`id`, `post_id`, `section_id`) VALUES
 (1, 1, 4);
 

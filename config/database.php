@@ -51,7 +51,7 @@ return [
             'collation' => 'utf8_spanish_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
+            'engine' => 'InnoDB',
         ],
 
         'pgsql' => [
