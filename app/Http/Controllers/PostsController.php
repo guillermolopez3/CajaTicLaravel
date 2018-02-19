@@ -11,12 +11,7 @@ use App\PostSection;
 
 class PostsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() //muestra la coleccion completa de post
+    public function index() //muestra la coleccion completa de post (tabla)
     {
         $posts = Post::orderBy('id','asc')->get();
         return view('posts.index',[
@@ -24,44 +19,102 @@ class PostsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create() //llamo al formulario y lo muestro
+    public function create() //llamo al formulario y lo muestro para crear un post nuevo
     {
-        $posts= new Post;
-        $array=array();
-        $posts->activo='1'; //defino que siempre el formulario muestre al crear el chk activo
-        $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
-        $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
-        //$activity= $act->pluck('name','id'); //con plunk le paso los parametros que solo quiero me muestre en el array
-        //dd($act);
-        return view('posts.create',[
-            'posts'     =>$posts,
-            'activity'  =>$activity,
-            'seccion'   =>$seccion,
-            'array' =>$array,
-        ]);
+       return $this->createEdit('posts.create','create');
+    }
+   
+    public function store(Request $request) //guardo el post haciendo click en el btn guardar
+    {
+       return $this->storeUpdate($request,'posts.create','store');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) //guardo el post haciendo click en el btn guardar
+    public function show($id)
     {
-        $post = new Post;
+        $posts= Post::find($id);
 
+        return view('posts.show',[
+            'posts'=>$posts,
+        ]);
+    }
+
+    public function edit($id) //abro el form para editar
+    {
+       return $this->createEdit('posts.edit','edit',$id);
+    }
+
+    public function update(Request $request, $id) //actualizo los valores en la bd
+    {
+       return $this->storeUpdate($request,'posts.update','update',$id);
+       
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+
+    //Método comun para mostrar el formulario cuando lo creo o lo modifico
+    private function createEdit($view,$method,$id=null)
+    {
+        $array=array();
+        $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
+        $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
+        //$activity= $act->pluck('name','id'); //con plunk le paso los parametros que solo quiero me muestre en el array
+
+        if($method==='create')
+        {
+            $posts= new Post;
+            $posts->activo='1'; //defino que siempre el formulario muestre al crear el chk activo
+        }
+        elseif($method==='edit'){
+            $posts= Post::find($id);
+            foreach ($posts->seccion as $role) {
+                $array=array_add($array,$role->id,$role->name);
+            }  
+
+        }
+        
+        return view($view,[
+            'posts'     =>$posts,
+            'activity'  =>$activity,
+            'seccion'   =>$seccion,
+            'array'     =>$array,
+        ]);
+    }
+
+    private function storeUpdate($request,$view,$method,$id=null)
+    {
         $chk = $request->activo; 
 
-        if(empty($chk)){ //verifico si el chk esta seleccionado o no, si no esta viene null
-            $chk=0;
-        }else{
-            $chk=1;
+        if($method==='store')
+        {
+            $post = new Post;
+            if(empty($chk)){ //verifico si el chk esta seleccionado o no, si no esta viene null
+                $chk=0;
+            }else{
+                $chk=1;
+            }    
+        }
+        elseif($method==='update'){
+            $post= Post::find($id);
+            if($chk ===null){ //verifico si el chk esta seleccionado o no, si no esta viene null
+                $chk=0;
+            }else{
+                $chk=1;
+            }
         }
         
         //dd($request);
@@ -84,7 +137,7 @@ class PostsController extends Controller
        {
              DB::rollBack();
             // return($e->getMessage());
-            return view('posts.create',[
+            return view($view,[
                 'posts'=>$post,
             ]);
        }
@@ -93,106 +146,5 @@ class PostsController extends Controller
         return redirect('/posts');
         
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $posts= Post::find($id);
-
-        return view('posts.show',[
-            'posts'=>$posts,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id) //abro el form para editar
-    {
-        $posts= Post::find($id);
-        $array=array(); //creo el array
-        //recorro las relaciones y creo un nuevo array con los valores necesarios para la seleccion multiple
-        //luego en el form uso array_keys para llenar el ocmbo multiple
-        foreach ($posts->seccion as $role) {
-            $array=array_add($array,$role->id,$role->name);
-        }   
-        $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
-        $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
-        return view('posts.edit',[
-            'posts'=>$posts,
-            'activity'=>$activity,
-            'seccion'   =>$seccion,
-            'array' =>$array,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id) //actualizo los valores en la bd
-    {
-        $post= Post::find($id);
-
-        $chk = 0; 
-
-        //dd($request);
-        if($request->activo ===null){ //verifico si el chk esta seleccionado o no, si no esta viene null
-            $chk=0;
-        }else{
-            $chk=1;
-        }
-       
-        $post->title = $request->title;
-        $post->copete = $request->copete;
-        $post->image = $request->img;
-        $post->tags = $request->tags;
-        $post->id_tipo_activity = $request->activity;
-        $post->description = $request->descripcion;
-        $post->link = $request->link;
-        $post->activo = $chk;
-
-        DB::beginTransaction();
-        try{
-            $post->save();
-            $post->seccion()->sync($request->get('seccion')); //de esta manera guardo en la tabla pivote
-            
-        }
-        catch(\Exception $e)
-       {
-             DB::rollBack();
-            //return($e->getMessage());
-           return view('posts.create',[
-                'posts'=>$post,
-            ]);
-       }
-
-        DB::commit();
-        return redirect('/posts');
-       
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
 
 }
