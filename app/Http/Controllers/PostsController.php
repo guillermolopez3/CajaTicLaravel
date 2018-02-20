@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Post;
 use App\Activity;
 use App\Section;
+use App\Level;
 use App\PostSection;
 
 class PostsController extends Controller
@@ -72,6 +73,7 @@ class PostsController extends Controller
         $array=array();
         $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
+        $level= Level::all()->pluck('name','id');
         //$activity= $act->pluck('name','id'); //con plunk le paso los parametros que solo quiero me muestre en el array
 
         if($method==='create')
@@ -92,6 +94,7 @@ class PostsController extends Controller
             'activity'  =>$activity,
             'seccion'   =>$seccion,
             'array'     =>$array,
+            'level'     =>$level,
         ]);
     }
 

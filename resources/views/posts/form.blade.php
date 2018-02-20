@@ -7,7 +7,12 @@
 
 	<div class="form-group">
 		{{ Form::label('seccion', 'Sección del Recurso (manteniendo la tecla ctl se hace la selección múltiple)', ['class' => 'form-control-label']) }}
-		{{ Form::select('seccion[]',$seccion,array_keys($array),['class'=>'form-control','multiple' => true]) }}
+		{{ Form::select('seccion[]',$seccion,array_keys($array),['class'=>'form-control','multiple' => true,'id'=>'seccion']) }}
+	</div>
+
+	<div class="form-group" id="nivel">
+		{{ Form::label('nivel', 'Nivel del Recurso', ['class' => 'form-control-label']) }}
+		{{ Form::select('nivel',$level,null,['class'=>'form-control']) }}
 	</div>
 
 	<div class="form-group">
@@ -48,3 +53,5 @@
 		<input type="submit" value="Guardar" class="btn btn-success">
 	</div>
 {!! Form::close() !!}
+
+

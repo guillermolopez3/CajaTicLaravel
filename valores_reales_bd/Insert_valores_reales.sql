@@ -28,3 +28,6 @@ INSERT INTO `posts` (`id`, `created_at`, `updated_at`, `title`, `copete`, `image
 INSERT INTO `post_section` (`id`, `post_id`, `section_id`) VALUES
 (1, 1, 4);
 
+INSERT INTO `levels` (`id`, `name`) VALUES 
+(NULL, '-'), (NULL, 'Inicial'), (NULL, 'Primario'), (NULL, 'Secundario');
+
