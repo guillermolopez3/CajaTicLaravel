@@ -71,6 +71,7 @@ class PostsController extends Controller
     private function createEdit($view,$method,$id=null)
     {
         $array=array();
+        $id_nivel=0;
         $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
         $level= Level::all()->pluck('name','id');
@@ -85,7 +86,11 @@ class PostsController extends Controller
             $posts= Post::find($id);
             foreach ($posts->seccion as $role) {
                 $array=array_add($array,$role->id,$role->name);
-            }  
+            } 
+
+            foreach ($posts->level as $le) {
+                $id_nivel=$le->id;
+            }
 
         }
         
@@ -95,12 +100,18 @@ class PostsController extends Controller
             'seccion'   =>$seccion,
             'array'     =>$array,
             'level'     =>$level,
+            'id_nivel'  =>$id_nivel,
         ]);
     }
 
     private function storeUpdate($request,$view,$method,$id=null)
     {
         $chk = $request->activo; 
+        $hasFile= $request->hasFile('imagen')&&$request->imagen->isValid();
+
+        $imagen = $request->file('imagen');
+        
+        //dd($filename);
 
         if($method==='store')
         {
@@ -120,34 +131,58 @@ class PostsController extends Controller
             }
         }
         
-        //dd($request);
+        $es_recurso=$this->guardoEnTablaPivoteLevelPost($request);
+       //dd($request);
         $post->title = $request->title;
         $post->copete = $request->copete;
         $post->image = $request->img;
         $post->tags = $request->tags;
         $post->id_tipo_activity = $request->activity;
         $post->description = $request->descripcion;
-        $post->link = $request->link;
+        //$post->link = $request->link;
+        $post->link = $imagen->store('img','public');
         $post->activo = $chk;
 
         DB::beginTransaction();
         try{
             $post->save();
+
             $post->seccion()->sync($request->get('seccion')); //de esta manera guardo en la tabla pivote
+            
+            if($es_recurso==true) //si es recursos, guardo el nivel o lo elimino
+            {
+                $post->level()->sync($request->get('nivel')); //guardo
+            }
+            else{
+                $post->level()->detach(); //elimino la relacion de la tabla pivote
+            }
             
         }
         catch(\Exception $e)
        {
              DB::rollBack();
-            // return($e->getMessage());
-            return view($view,[
+             return($e->getMessage());
+            /*return view($view,[
                 'posts'=>$post,
-            ]);
+            ]);*/
        }
 
         DB::commit();
         return redirect('/posts');
         
     }
+
+    private function guardoEnTablaPivoteLevelPost($request) //verifico si se selecciono la opcion recursos para saber si guardo o no en la latbla pivote recursos
+    {
+        $recursos= $request->get('seccion');
+        foreach ($recursos as $re) {
+            //dd($re);
+            if($re==4)
+            {
+                return true;
+            }
+        }
+        return false;
+    } 
 
 }

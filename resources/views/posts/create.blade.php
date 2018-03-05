@@ -17,29 +17,7 @@
 
 @section('scripts')
 	<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script>
-    	$(document).ready(function(){
-    		function displayVals() {
-			  var valor = $( "#seccion" ).val() || [];
-			  console.log(valor);
-			  if(valor.length<=0)
-			  {
-			  	$('#nivel').hide();
-			  }
-			  else{
-			  	 for(var i=0;i<valor.length;i++)
-			  	{
-				  	if(valor[i]==4)
-				  	{
-				  		$('#nivel').show();
-				  	}
-			  	}
-			  }
-			}
-			 
-			$( "#seccion" ).change( displayVals );
-			displayVals();
-		
-    	});
-    </script>
+    
+    <script src="{{ asset('js/posts.js') }}"></script>
+   
 @endsection

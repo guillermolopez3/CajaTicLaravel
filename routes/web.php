@@ -26,6 +26,12 @@ PUT/PATCH /posts/:id => actualiza el post
 DELETE /posts/:id => elimina el post
 */
 
+Route::get('/api/posts/getPostsSeccion','ApiPostsController@getAllPostForSection');
+
+Route::get('/api/posts/getPostsSearch','ApiPostsController@getPostForSearchMenu');
+
+Route::get('/api/posts/getPostsLevel','ApiPostsController@getAllPostForEspacioDidactico');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

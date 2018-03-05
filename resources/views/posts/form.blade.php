@@ -1,4 +1,4 @@
-{!! Form::open(['url'=>$url,'method'=>$method]) !!}
+{!! Form::open(['url'=>$url,'method'=>$method, 'files'=>true]) !!}
 	
 	<div class="form-group">
 		{{ Form::label('activity', 'Tipo de Recurso', ['class' => 'form-control-label']) }}
@@ -12,12 +12,12 @@
 
 	<div class="form-group" id="nivel">
 		{{ Form::label('nivel', 'Nivel del Recurso', ['class' => 'form-control-label']) }}
-		{{ Form::select('nivel',$level,null,['class'=>'form-control']) }}
+		{{ Form::select('nivel',$level,$id_nivel,['class'=>'form-control','id'=>'cmb_level']) }}
 	</div>
 
 	<div class="form-group">
 		{{ Form::label('title', 'Título del Post', ['class' => 'form-control-label']) }}
-		{{ Form::text('title',$posts->title,['class'=>'form-control', 'placeholder'=>'titulo']) }}
+		{{ Form::text('title',$posts->title,['class'=>'form-control', 'placeholder'=>'titulo', 'required']) }}
 	</div>
 	<div class="form-group">
 		{{ Form::label('copete', 'Mini descripción', ['class' => 'form-control-label']) }}
@@ -27,6 +27,12 @@
 		{{ Form::label('img', 'Url de la imagen', ['class' => 'form-control-label']) }}
 		{{ Form::text('img',$posts->image,['class'=>'form-control', 'placeholder'=>'url de la imagen']) }}
 	</div>
+
+	<div class="form-group">
+		{{ Form::label('imagen', 'Url de la imagen', ['class' => 'form-control-label']) }}
+		{{ Form::file('imagen') }}
+	</div>
+
 	<div class="form-group">
 		{{ Form::label('tags', 'Tags', ['class' => 'form-control-label']) }}
 		{{ Form::text('tags',$posts->tags,['class'=>'form-control', 'placeholder'=>'Tags']) }}
