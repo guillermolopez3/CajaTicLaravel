@@ -7,12 +7,13 @@
 
 	<div class="form-group">
 		{{ Form::label('seccion', 'Sección del Recurso (manteniendo la tecla ctl se hace la selección múltiple)', ['class' => 'form-control-label']) }}
-		{{ Form::select('seccion[]',$seccion,array_keys($array),['class'=>'form-control','multiple' => true,'id'=>'seccion']) }}
+		{{ Form::select('seccion[]',$seccion,array_keys($array),['class'=>'form-control','required','multiple' => true,'id'=>'seccion']) }}
 	</div>
 
+	
 	<div class="form-group" id="nivel">
-		{{ Form::label('nivel', 'Nivel del Recurso', ['class' => 'form-control-label']) }}
-		{{ Form::select('nivel',$level,$id_nivel,['class'=>'form-control','id'=>'cmb_level']) }}
+		{{ Form::label('mnivel', 'Nivel del Recurso', ['class' => 'form-control-label']) }}
+		{{ Form::select('mnivel[]',$level,array_keys($id_nivel),['class'=>'form-control','id'=>'cmb_level','multiple' => true,'id'=>'seccion']) }}
 	</div>
 
 	<div class="form-group">
@@ -45,6 +46,12 @@
 		{{ Form::label('link', 'Url del recurso', ['class' => 'form-control-label']) }}
 		{{ Form::text('link',$posts->link,['class'=>'form-control', 'placeholder'=>'url del recurso (Video, web...)']) }}
 	</div>
+
+	<div class="form-group">
+		{{ Form::label('pdf', 'Cargar PDF', ['class' => 'form-control-label']) }}
+		{{ Form::file('pdf') }}
+	</div>
+
 	<div class="form-group">
 		{{ Form::label('activo', '¿Post activo?', ['class' => 'form-control-label']) }}
 		

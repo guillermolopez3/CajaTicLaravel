@@ -32,6 +32,8 @@ Route::get('/api/posts/getPostsSearch','ApiPostsController@getPostForSearchMenu'
 
 Route::get('/api/posts/getPostsLevel','ApiPostsController@getAllPostForEspacioDidactico');
 
+Route::get('/api/posts/getNovedades','ApiPostsController@getAllNovedades');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

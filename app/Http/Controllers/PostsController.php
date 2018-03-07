@@ -71,6 +71,7 @@ class PostsController extends Controller
     private function createEdit($view,$method,$id=null)
     {
         $array=array();
+        $arrayNivel=array();
         $id_nivel=0;
         $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
@@ -89,7 +90,8 @@ class PostsController extends Controller
             } 
 
             foreach ($posts->level as $le) {
-                $id_nivel=$le->id;
+                //$id_nivel=$le->id;
+                $arrayNivel=array_add($arrayNivel,$le->id,$le->name);
             }
 
         }
@@ -100,7 +102,7 @@ class PostsController extends Controller
             'seccion'   =>$seccion,
             'array'     =>$array,
             'level'     =>$level,
-            'id_nivel'  =>$id_nivel,
+            'id_nivel'  =>$arrayNivel,
         ]);
     }
 
@@ -108,10 +110,15 @@ class PostsController extends Controller
     {
         $chk = $request->activo; 
         $hasFile= $request->hasFile('imagen')&&$request->imagen->isValid();
+        $hasPdf= $request->hasFile('pdf')&&$request->pdf->isValid();
 
         $imagen = $request->file('imagen');
+       
         
-        //dd($filename);
+        $pdf    = $request->file('pdf');
+        
+        
+        //dd($$nameImage);
 
         if($method==='store')
         {
@@ -135,14 +142,29 @@ class PostsController extends Controller
        //dd($request);
         $post->title = $request->title;
         $post->copete = $request->copete;
-        $post->image = $request->img;
+       
+        if($hasFile){
+             $nameImage= rand(1,100) . $imagen->getClientOriginalName();
+            $post->image = $imagen->storeAs('img',$nameImage,'public');    
+        }
+        else{
+            $post->image =$request->img;   
+        }
+        
         $post->tags = $request->tags;
         $post->id_tipo_activity = $request->activity;
         $post->description = $request->descripcion;
-        //$post->link = $request->link;
-        $post->link = $imagen->store('img','public');
+        if($hasPdf){
+            $namePdf= rand(1,100) . $pdf->getClientOriginalName();
+             $post->link = $pdf->storeAs('files',$namePdf,'public');     
+        }
+        else{
+             $post->link = $request->link;
+        }
+       
         $post->activo = $chk;
 
+       
         DB::beginTransaction();
         try{
             $post->save();
@@ -151,7 +173,7 @@ class PostsController extends Controller
             
             if($es_recurso==true) //si es recursos, guardo el nivel o lo elimino
             {
-                $post->level()->sync($request->get('nivel')); //guardo
+                $post->level()->sync($request->get('mnivel')); //guardo
             }
             else{
                 $post->level()->detach(); //elimino la relacion de la tabla pivote

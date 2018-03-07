@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAnalyticsPostsTable extends Migration
+class CreateSectionNuestraEscuelasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateAnalyticsPostsTable extends Migration
      */
     public function up()
     {
-        Schema::create('analytics_posts', function (Blueprint $table) {
+        Schema::create('section_nuestra_escuelas', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->string('name');
+            $table->boolean('activo');
         });
     }
 
@@ -26,6 +27,6 @@ class CreateAnalyticsPostsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('analytics_posts');
+        Schema::dropIfExists('section_nuestra_escuelas');
     }
 }
