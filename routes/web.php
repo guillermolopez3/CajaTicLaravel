@@ -34,6 +34,8 @@ Route::get('/api/posts/getPostsLevel','ApiPostsController@getAllPostForEspacioDi
 
 Route::get('/api/posts/getNovedades','ApiPostsController@getAllNovedades');
 
+Route::get('/api/posts/getNuestraEscuela','ApiPostsController@getAllNuestraEscuela');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

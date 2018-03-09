@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePostSectionNuestraEscuelasTable extends Migration
+class CreateNesectionPostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreatePostSectionNuestraEscuelasTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_section_nuestra_escuelas', function (Blueprint $table) {
+        Schema::create('nesection_posts', function (Blueprint $table) {
             $table->increments('id')->comment('relaciona el post con la sec NE y le agrega el id la subcategoria');
             $table->integer('post_id')->unsigned(); //para que funcione va nombre_id
-            $table->integer('sectio_nuestra_escuela_id')->unsigned();
+            $table->integer('nesection_id')->unsigned();
 
             $table->foreign('post_id')->references('id')->on('posts');
-            $table->foreign('sectio_nuestra_escuela_id')->references('id')->on('section_nuestra_escuelas');
+            $table->foreign('nesection_id')->references('id')->on('nesections');
         });
     }
 
@@ -30,6 +30,6 @@ class CreatePostSectionNuestraEscuelasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_section_nuestra_escuelas');
+        Schema::dropIfExists('nesection_posts');
     }
 }

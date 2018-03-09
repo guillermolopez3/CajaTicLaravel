@@ -9,6 +9,7 @@ use App\Activity;
 use App\Section;
 use App\Level;
 use App\PostSection;
+use App\Nesection;
 
 class PostsController extends Controller
 {
@@ -72,11 +73,13 @@ class PostsController extends Controller
     {
         $array=array();
         $arrayNivel=array();
+        $arrayNE=array();
         $id_nivel=0;
         $seccion= Section::where('activo', true)->orderBy('name','asc')->get(['id', 'name'])->pluck('name','id');
         $activity= Activity::where('activo', true)->get(['id', 'name'])->pluck('name','id');
         $level= Level::all()->pluck('name','id');
         //$activity= $act->pluck('name','id'); //con plunk le paso los parametros que solo quiero me muestre en el array
+        $sectionNE=Nesection::all()->pluck('name','id');
 
         if($method==='create')
         {
@@ -94,15 +97,23 @@ class PostsController extends Controller
                 $arrayNivel=array_add($arrayNivel,$le->id,$le->name);
             }
 
+            foreach ($posts->nuestraEscuela as $ne) {
+                //dd($ne);
+                //$id_nivel=$le->id;
+                $arrayNE=array_add($arrayNE,$ne->id,$ne->name);
+            }
+
         }
         
         return view($view,[
             'posts'     =>$posts,
             'activity'  =>$activity,
             'seccion'   =>$seccion,
+            'ne'        =>$sectionNE,
             'array'     =>$array,
             'level'     =>$level,
             'id_nivel'  =>$arrayNivel,
+            'arrayNE'   =>$arrayNE,
         ]);
     }
 
@@ -139,7 +150,9 @@ class PostsController extends Controller
         }
         
         $es_recurso=$this->guardoEnTablaPivoteLevelPost($request);
-       //dd($request);
+        $es_ne=$this->guardoEnTablaPivotePostNE($request);
+       //dd($es_ne);
+
         $post->title = $request->title;
         $post->copete = $request->copete;
        
@@ -178,6 +191,14 @@ class PostsController extends Controller
             else{
                 $post->level()->detach(); //elimino la relacion de la tabla pivote
             }
+
+            if($es_ne==true)
+            {
+                $post->nuestraEscuela()->sync($request->get('ne'));
+            }
+            else{
+                $post->nuestraEscuela()->detach();
+            }
             
         }
         catch(\Exception $e)
@@ -200,6 +221,19 @@ class PostsController extends Controller
         foreach ($recursos as $re) {
             //dd($re);
             if($re==4)
+            {
+                return true;
+            }
+        }
+        return false;
+    } 
+
+    private function guardoEnTablaPivotePostNE($request) //verifico si se selecciono la opcion ne para saber si guardo o no en la latbla pivote recursos
+    {
+        $recursos= $request->get('seccion');
+        foreach ($recursos as $re) {
+            //dd($re);
+            if($re==3)
             {
                 return true;
             }

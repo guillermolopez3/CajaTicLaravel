@@ -63,6 +63,19 @@ class ApiPostsController extends Controller
 
         return ($resul);
     }
+
+    public function getAllNuestraEscuela(Request $request)
+    {
+        $seccionNe= $request->seccionNe;
+        $resul= \DB::table('nesection_posts')->join('posts','nesection_posts.post_id','=','posts.id')
+                    ->select('posts.*')
+                    ->where('nesection_posts.nesection_id','=',$seccionNe)
+                    ->where('posts.activo','=',"1")
+                    ->paginate(15);
+        $resul-> setPath('custom/url');
+
+        return $resul;
+    }
 }
 
 

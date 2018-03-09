@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSectionNuestraEscuelasTable extends Migration
+class CreateNesectionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSectionNuestraEscuelasTable extends Migration
      */
     public function up()
     {
-        Schema::create('section_nuestra_escuelas', function (Blueprint $table) {
+        Schema::create('nesections', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->boolean('activo');
@@ -27,6 +27,6 @@ class CreateSectionNuestraEscuelasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('section_nuestra_escuelas');
+        Schema::dropIfExists('nesections');
     }
 }

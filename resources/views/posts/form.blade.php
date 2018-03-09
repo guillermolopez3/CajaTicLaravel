@@ -13,7 +13,12 @@
 	
 	<div class="form-group" id="nivel">
 		{{ Form::label('mnivel', 'Nivel del Recurso', ['class' => 'form-control-label']) }}
-		{{ Form::select('mnivel[]',$level,array_keys($id_nivel),['class'=>'form-control','id'=>'cmb_level','multiple' => true,'id'=>'seccion']) }}
+		{{ Form::select('mnivel[]',$level,array_keys($id_nivel),['class'=>'form-control','id'=>'cmb_level','multiple' => true]) }}
+	</div>
+
+	<div class="form-group" id="nues">
+		{{ Form::label('ne', 'Categoria dentro de Nuestra Escuela', ['class' => 'form-control-label']) }}
+		{{ Form::select('ne[]',$ne,array_keys($arrayNE),['class'=>'form-control','id'=>'cmb_ne','multiple' => true]) }}
 	</div>
 
 	<div class="form-group">
@@ -30,7 +35,7 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('imagen', 'Url de la imagen', ['class' => 'form-control-label']) }}
+		{{ Form::label('imagen', 'Subir imagen', ['class' => 'form-control-label']) }}
 		{{ Form::file('imagen') }}
 	</div>
 
@@ -48,7 +53,7 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('pdf', 'Cargar PDF', ['class' => 'form-control-label']) }}
+		{{ Form::label('pdf', 'Cargar Link Recurso', ['class' => 'form-control-label']) }}
 		{{ Form::file('pdf') }}
 	</div>
 

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SectionNuestraEscuela extends Model
+class Nesection extends Model
 {
     //
 }
